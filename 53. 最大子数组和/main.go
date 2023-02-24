@@ -29,19 +29,24 @@ package main
 // 左右指针
 // 先构建左边，负数直接右滑， 正数停止，如果后面负数小于正数， 构建成功
 // 右边，负数停止，遍历，如果后面的可以填充负数，后移，直到不能填充
-
+func Max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
 func maxSubArray(nums []int) int {
 	if len(nums) == 1 {
 		return nums[0]
 	}
-	l, r := 0, 0
+	maxSum := nums[0]
+	cur := 0
 	for i := 0; i < len(nums); i++ {
-		n := nums[i]
-		if n <= 0 {
-			l++
-		} else {
-
+		if cur < 0 {
+			cur = 0
 		}
+		cur = cur + nums[i]
+		maxSum = Max(maxSum, cur)
 	}
-
+	return maxSum
 }
