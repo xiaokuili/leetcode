@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 // 给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
 
 // 子数组 是数组中的一个连续部分。
@@ -26,9 +28,6 @@ package main
 // 1 <= nums.length <= 105
 // -104 <= nums[i] <= 104
 
-// 左右指针
-// 先构建左边，负数直接右滑， 正数停止，如果后面负数小于正数， 构建成功
-// 右边，负数停止，遍历，如果后面的可以填充负数，后移，直到不能填充
 func Max(x, y int) int {
 	if x > y {
 		return x
@@ -49,4 +48,10 @@ func maxSubArray(nums []int) int {
 		maxSum = Max(maxSum, cur)
 	}
 	return maxSum
+
+}
+
+func main() {
+	nums := []int{-2, 1, -3, 4, -1, 2, 1, -5, 4}
+	fmt.Println(maxSubArray(nums))
 }
