@@ -24,55 +24,52 @@
 // 输出: ""
 // 解释: t 中两个字符 'a' 均应包含在 s 的子串中，
 // 因此没有符合条件的子字符串，返回空字符串。
+// 这道题竟然不是dp
+// 遇到是否出现，但是不考虑顺序，就去hash
 
 package main
 
+import "fmt"
+
 func minWindow(s string, t string) string {
-	lt, ls := len(t), len(s)
-	pre := make([][]int, 0)
-	for i := lt - 1; i >= 0; i-- {
-		cur := make([][]int, 0)
-		for j := 0; j < ls; j++ {
-			if s[j] == t[i] {
-				short := 10000000
-				m, n := j, j
-				for h := 0; h < len(pre); h++ {
-					p := pre[h]
-					if j < p[0] {
-						if p[1]-j < short {
-							short = p[1] - j
-							m, n = j, p[1]
-						}
-					}
-					if j > p[1] {
-						if j-p[0] < short {
-							short = j - p[0]
-							m, n = p[0], j
-						}
-					}
-					if j > p[0] && j < p[1] {
-						if p[1]-p[0] < short {
-							short = p[1] - p[0]
-							m, n = p[0], p[1]
-						}
-					}
-				}
-				cur = append(cur, []int{m, n})
+	if t == "" || s == "" {
+		return ""
+	}
+	windowT, windowS := make(map[byte]int), make(map[byte]int)
+	for i := 0; i < len(t); i++ {
+		windowT[t[i]] = windowT[t[i]] + 1
+	}
+	fmt.Println(windowT)
+	need, have := len(windowT), 0
+	rstl, rstr := 0, 0
+	min := 100000
+	l := 0
+	for r := 0; r < len(s); r++ {
+		windowS[s[r]] = windowS[s[r]] + 1
+
+		if _, ok := windowT[s[r]]; ok && windowS[s[r]] == windowT[s[r]] {
+			have++
+
+		}
+		for need == have {
+			if (r - l + 1) < min {
+				min = r - l + 1
+				rstl = l
+				rstr = r + 1
 			}
-		}
-		pre = cur
-	}
-	short := 1000000
-	m, n := 0, 0
-	for i := 0; i < len(pre); i++ {
-		p := pre[i]
-		if p[1]-p[0] < short {
-			m, n = p[0], p[1]
+			windowS[s[l]] = windowS[s[l]] - 1
+			if _, ok := windowT[s[l]]; ok && windowS[s[l]] < windowT[s[l]] {
+				have = have - 1
+			}
+			l = l + 1
+
 		}
 	}
-	return s[m:n]
+	return s[rstl:rstr]
 }
 
 func main() {
-
+	s := "ADOBECODEBANC"
+	t := "ABC"
+	fmt.Println(minWindow(s, t)) // BANC
 }
